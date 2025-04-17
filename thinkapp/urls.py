@@ -1,4 +1,3 @@
-# 7th create urls 
 from django.urls import path,re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -33,13 +32,16 @@ urlpatterns = [
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot_password"),
     # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("assign-role/", AssignRoleView.as_view(), name="assign_role"),  # Assign roles
-    path("delete-account/", DeleteAccountView.as_view(), name="delete_own_account"),  # Delete own account
-    path("delete-account/<int:user_id>/", DeleteAccountView.as_view(), name="delete_user"),  # For admin deleting others
-    path("users/", UserListView.as_view(), name="user_list"),  # List all users
+    path("assign-role/", AssignRoleView.as_view(), name="assign_role"), 
+    # Delete own account
+    path("delete-account/", DeleteAccountView.as_view(), name="delete_own_account"), 
+    # For admin deleting others
+    path("delete-account/<int:user_id>/", DeleteAccountView.as_view(), name="delete_user"),
+    # List all users  
+    path("users/", UserListView.as_view(), name="user_list"),  
     path("users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
 
-     # Admin Endpoints
+    # Admin Endpoints
     path("admin/users/", AdminUserListView.as_view(), name="admin_user_list"),
     path("admin/users/create/", AdminUserCreateView.as_view(), name="admin_user_create"),
     path("admin/users/update/<int:pk>/", AdminUserUpdateView.as_view(), name="admin_user_update"),
@@ -56,7 +58,7 @@ urlpatterns = [
     path("student/users/update/", StudentUserUpdateView.as_view(), name="student_user_update"),  # Only update self
     path("student/users/delete/", StudentUserDeleteView.as_view(), name="student_user_delete"),  # Only delete self
 
+    # Swagger Endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
-
 
 ]

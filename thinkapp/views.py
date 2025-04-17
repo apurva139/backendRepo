@@ -1,4 +1,3 @@
-# 5th create views
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -36,18 +35,6 @@ class RegisterView(APIView):
             user = serializer.save()
             return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class LoginView(APIView):
-#     @swagger_auto_schema(
-#             tags=['auth'], 
-#             # security=[],
-#             request_body=LoginSerializer
-#             )
-#     def post(self, request):
-#         serializer = LoginSerializer(data=request.data)
-#         if serializer.is_valid():
-#             return Response(serializer.validated_data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     @swagger_auto_schema(
@@ -124,51 +111,6 @@ class ForgotPasswordView(APIView):
             return Response({"message": "Password reset link sent", "token": token}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class TokenRefreshView(APIView):
-#     # @swagger_auto_schema(tags=['refreshToken'])
-#     @swagger_auto_schema(
-#         tags=['auth'],
-#         operation_summary="Refresh Access Token",
-#         request_body=openapi.Schema(
-#             type=openapi.TYPE_OBJECT,
-#             required=["refresh"],  # This field is required in the request
-#             properties={
-#                 "refresh": openapi.Schema(
-#                     type=openapi.TYPE_STRING,
-#                     description="The refresh token obtained during login."
-#                 )
-#             }
-#         ),
-#         responses={
-#             200: openapi.Schema(
-#                 type=openapi.TYPE_OBJECT,
-#                 properties={
-#                     "access": openapi.Schema(
-#                         type=openapi.TYPE_STRING,
-#                         description="The new access token"
-#                     )
-#                 }
-#             ),
-#             400: openapi.Schema(
-#                 type=openapi.TYPE_OBJECT,
-#                 properties={
-#                     "error": openapi.Schema(
-#                         type=openapi.TYPE_STRING,
-#                         description="Invalid token error message"
-#                     )
-#                 }
-#             )
-#         }
-#     )
-    
-#     def post(self, request):
-#         try:
-#             refresh_token = request.data["refresh"]
-#             token = RefreshToken(refresh_token)
-#             return Response({"access": str(token.access_token)}, status=status.HTTP_200_OK)
-#         except Exception:
-#             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-
 class MyPagination(PageNumberPagination):
         page_size_query_param = 'page_size'
         max_page_size = 100  # Optional, limits the maximum page size
@@ -197,27 +139,14 @@ class UserListView(generics.ListAPIView):
             )
             
         return queryset
-    # def get_paginated_response(self, data):
-    #     print(data,"::::::::::::::::::::;")
-    #     return super().get_paginated_response(data)
-    # def paginate_queryset(self, queryset):
-    #     print(":::::::::", queryset)
-
-    #     page = super().paginate_queryset(queryset)
-    #     print(page, "::::::::::::::::::")
-    #     return page
-    # def get(self, request, *args, **kwargs):
-    #     print("::::::::::::::::::")
-    #     return super().get(request, *args, **kwargs)
-    
-
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserRegisterSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users can view details
-    lookup_field = "pk"  # Retrieve user by primary key (ID)
-
+    # Only authenticated users can view details
+    permission_classes = [permissions.IsAuthenticated]  
+    # Retrieve user by primary key (ID)
+    lookup_field = "pk"  
 
 class AssignRoleView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -229,9 +158,10 @@ class AssignRoleView(APIView):
         print("User Role:", request.user.role)
         if request.user.role != "admin":
             return Response({"error": "Only Admin can assign roles"}, status=status.HTTP_403_FORBIDDEN)
-
-        user_id = request.data.get("id")  # Get user ID from payload
-        new_role = request.data.get("role")  # Get role from payload
+        # Get user ID from payload
+        user_id = request.data.get("id") 
+        # Get role from payload 
+        new_role = request.data.get("role")  
 
         if not user_id or not new_role:
             return Response({"error": "User ID and role are required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -243,17 +173,11 @@ class AssignRoleView(APIView):
             user = CustomUser.objects.get(id=user_id)
             user.role = new_role
             user.save()
-
-            # # Convert role to match the Group name (Title Case: "Admin", "Manager", "Student")
-            # group_name = new_role.capitalize()
-            # group = Group.objects.get(name=group_name)
-
-            # user.groups.clear()  # Remove previous group
-            # user.groups.add(group)
             
             # Assign the user to the appropriate group
             group = Group.objects.get(name=new_role)
-            user.groups.clear()  # Remove previous group
+            # Remove previous group
+            user.groups.clear()  
             user.groups.add(group)
 
             return Response({"message": f"Role updated to {new_role} for user {user.username}"}, status=status.HTTP_200_OK)
@@ -261,7 +185,6 @@ class AssignRoleView(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Group.DoesNotExist:
             return Response({"error": "Role group not found"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class DeleteAccountView(APIView):
     permission_classes = [permissions.IsAuthenticated]

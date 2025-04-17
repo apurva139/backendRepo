@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-a#ji=r+ik11me31givzv9br2#z(ip^(q+d38noje0749&jcb2+"
+SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# Allow connections from local development
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Application definition
 
@@ -58,9 +56,6 @@ MIDDLEWARE = [
 
 ]
 
-ROOT_URLCONF = "thinkproj.urls"
-AUTH_USER_MODEL = "thinkapp.CustomUser"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -77,9 +72,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "thinkproj.wsgi.application"
-
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -90,6 +82,9 @@ DATABASES = {
     }
 }
 
+WSGI_APPLICATION = "thinkproj.wsgi.application"
+ROOT_URLCONF = "thinkproj.urls"
+AUTH_USER_MODEL = "thinkapp.CustomUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -162,7 +157,8 @@ SWAGGER_SETTINGS = {
     }
 }
 
+# Allow frontend app (React/Angular) to access backend API (CORS config)
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3001",
+    "http://localhost:3001", #React dev server
 ]
 CORS_ALLOW_ALL_ORIGINS = True
