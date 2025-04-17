@@ -11,6 +11,11 @@ from .views import (
     ManagerUserDeleteOwnAccountView,StudentUserListView, StudentUserUpdateView, StudentUserDeleteView
 )
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 # Swagger Schema Configuration
 schema_view = get_schema_view(
     openapi.Info(
@@ -31,7 +36,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot_password"),
-    # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("assign-role/", AssignRoleView.as_view(), name="assign_role"), 
     # Delete own account
     path("delete-account/", DeleteAccountView.as_view(), name="delete_own_account"), 
@@ -57,6 +61,10 @@ urlpatterns = [
     path("student/users/", StudentUserListView.as_view(), name="student_user_list"),
     path("student/users/update/", StudentUserUpdateView.as_view(), name="student_user_update"),  # Only update self
     path("student/users/delete/", StudentUserDeleteView.as_view(), name="student_user_delete"),  # Only delete self
+    
+    # Token Endpoints
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Swagger Endpoint
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
